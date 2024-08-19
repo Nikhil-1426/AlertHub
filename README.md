@@ -1,4 +1,4 @@
-# alert_hub
+# Alert Hub
 
 A new Flutter project.
 
