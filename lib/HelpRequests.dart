@@ -35,7 +35,9 @@ class _HelpRequestPageState extends State<HelpRequestPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Help Request'),
+        title: Text('Help Request', style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.blueAccent,
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -43,12 +45,26 @@ class _HelpRequestPageState extends State<HelpRequestPage> {
           children: [
             TextField(
               controller: _helpDescriptionController,
-              decoration: InputDecoration(labelText: 'Help Request Description'),
+              decoration: InputDecoration(
+                hintText: 'Enter help request description',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                filled: true,
+                fillColor: Colors.white,
+              ),
+              maxLines: 4, // Adjust the height of the text field
             ),
-            SizedBox(height: 16.0),
+            SizedBox(height: 18.0),
             ElevatedButton(
               onPressed: _sendHelpRequest,
-              child: Text('Submit Help Request'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blueAccent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+              ),
+              child: Text('Submit Help Request', style: TextStyle(color: Colors.white)),
             ),
           ],
         ),

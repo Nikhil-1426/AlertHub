@@ -8,12 +8,14 @@ class AdminHelpRequestsPage extends StatelessWidget {
     return _firestore.collection('help_requests').orderBy('timestamp').snapshots();
   }
 
-  Future<String> _getUserEmail(String userId) async {
+  Future<Map<String, String>> _getUserDetails(String userId) async {
     DocumentSnapshot userDoc = await _firestore.collection('users').doc(userId).get();
     if (userDoc.exists) {
-      return userDoc['email'] ?? 'Unknown sender';
+      String email = userDoc['email'] ?? 'Unknown email';
+      String name = userDoc['name'] ?? 'Unknown name';
+      return {'email': email, 'name': name};
     } else {
-      return 'Unknown sender';
+      return {'email': 'Unknown email', 'name': 'Unknown name'};
     }
   }
 
@@ -21,43 +23,96 @@ class AdminHelpRequestsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Help Requests'),
+        title: Text(
+          'Help Requests',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.blueAccent, // Consistent color with AdminAlertsPage
+        iconTheme: IconThemeData(color: Colors.white),
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: _getHelpRequests(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
-          }
+      body: Padding(
+        padding: const EdgeInsets.all(16.0), // Consistent padding with AdminAlertsPage
+        child: StreamBuilder<QuerySnapshot>(
+          stream: _getHelpRequests(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Center(child: CircularProgressIndicator());
+            }
 
-          var requests = snapshot.data!.docs;
+            var requests = snapshot.data!.docs;
 
-          return ListView.builder(
-            itemCount: requests.length,
-            itemBuilder: (context, index) {
-              var requestData = requests[index];
-              String userId = requestData['userId'];
-              String description = requestData['description'];
+            return ListView.builder(
+              itemCount: requests.length,
+              itemBuilder: (context, index) {
+                var requestData = requests[index];
+                String userId = requestData['userId'];
+                String description = requestData['description'];
 
-              return FutureBuilder<String>(
-                future: _getUserEmail(userId),
-                builder: (context, userSnapshot) {
-                  if (!userSnapshot.hasData) {
-                    return ListTile(
-                      title: Text('Loading...'),
-                      subtitle: Text('Loading...'),
+                return FutureBuilder<Map<String, String>>(
+                  future: _getUserDetails(userId),
+                  builder: (context, userSnapshot) {
+                    if (!userSnapshot.hasData) {
+                      return Container(
+                        margin: EdgeInsets.symmetric(vertical: 8.0),
+                        padding: EdgeInsets.all(16.0),
+                        decoration: BoxDecoration(
+                          color: Colors.blue[50], // Consistent background with AdminAlertsPage
+                          borderRadius: BorderRadius.circular(8.0), // Rounded corners
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 4.0,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: ListTile(
+                          title: Text(
+                            'Loading...',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromARGB(255, 73, 145, 167), // Consistent text color
+                            ),
+                          ),
+                          subtitle: Text('Loading...'),
+                        ),
+                      );
+                    }
+
+                    String email = userSnapshot.data!['email']!;
+                    String name = userSnapshot.data!['name']!;
+
+                    return Container(
+                      margin: EdgeInsets.symmetric(vertical: 8.0),
+                      decoration: BoxDecoration(
+                        color: Colors.blue[50], // Consistent background with AdminAlertsPage
+                        borderRadius: BorderRadius.circular(8.0), // Rounded corners
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 4.0,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: ListTile(
+                        contentPadding: EdgeInsets.all(16.0), // Consistent padding
+                        title: Text(
+                          '$name ($email)',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(255, 73, 145, 167), // Consistent text color
+                          ),
+                        ),
+                        subtitle: Text(description),
+                      ),
                     );
-                  }
-
-                  return ListTile(
-                    title: Text(userSnapshot.data!),
-                    subtitle: Text(description),
-                  );
-                },
-              );
-            },
-          );
-        },
+                  },
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }
