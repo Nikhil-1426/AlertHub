@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "299852356857",
+    "project_id": "alerthub-a69ed",
+    "storage_bucket": "alerthub-a69ed.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:299852356857:android:eabfad173c601839ca1628",
+        "android_client_info": {
+          "package_name": "com.example.alert_hub"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6XCCv_0CgzAhpipHgGNV8rjct_AYp_xg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
